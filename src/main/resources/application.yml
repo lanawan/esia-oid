@@ -2,12 +2,12 @@ server.port: 8080
 
 esia:
   # v1
-  auth-code-url: https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac
+  # auth-code-url: https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac
   # v2
-  #auth-code-url: https://esia-portal1.test.gosuslugi.ru/aas/oauth2/v2/ac
+  auth-code-url: https://esia-portal1.test.gosuslugi.ru/aas/oauth2/v2/ac
   client-id: ${ESIA_CLIENT_ID}
-  return-url: http://localhost:${server.port}/esia_return
   client-certificate-hash: ${ESIA_CLIENT_CERTIFICATE_HASH}
+  return-url: http://localhost:${server.port}/esia_return
 
   keystore-alias: ${ESIA_KEYSTORE_ALIAS}
   keystore-password: ${ESIA_PRIVATE_KEY_PASSWORD}

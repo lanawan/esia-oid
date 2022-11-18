@@ -11,6 +11,9 @@ import ru.CryptoPro.JCP.params.AlgIdSpec;
 import ru.CryptoPro.JCP.params.OID;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -52,21 +55,21 @@ class CryptoSignerImpl implements CryptoSigner {
      */
     @Override
     public byte[] sign(String textToSign) {
-        final boolean detached = true;
+        boolean detached = true;
         try {
-            byte[] bytesToSign = textToSign.getBytes(StandardCharsets.UTF_8.name());
-            Signature signature = Signature.getInstance(JCP.GOST_SIGN_2012_256_NAME);
-
-            signature.initSign(privateKey);
-            signature.update(bytesToSign);
-            byte[] signedBytes =  signature.sign();
-
-            return createCMS(bytesToSign, signedBytes, certificate, detached);
+            return cmsSign(textToSign.getBytes(StandardCharsets.UTF_8.name()), privateKey, certificate, detached);
         } catch (Exception e) {
-            throw new CryptoSignerException("Unable to sign (Gost2012Pkcs7Detached)'"
-                    + (textToSign.length() <= 200 ? textToSign : textToSign.substring(0, 188) + "…(truncated)")
-                    + '\'', e);
+            throw new CryptoSignerException("Unable to sign '" + textToSign.substring(0, 50) + '\'', e);
         }
+    }
+
+    private byte[] cmsSign(byte[] data, PrivateKey key, Certificate cert, boolean detached) throws Exception {
+        Signature signature = Signature.getInstance(JCP.GOST_SIGN_2012_256_NAME);
+
+        signature.initSign(key);
+        signature.update(data);
+        byte[] sign = signature.sign();
+        return createCMS(data, sign, cert, detached);
     }
 
     /**
@@ -84,7 +87,7 @@ class CryptoSignerImpl implements CryptoSigner {
         a.parameters = new Asn1Null();
         cms.digestAlgorithms.elements[0] = a;
         if (detached) {
-            cms.encapContentInfo = new EncapsulatedContentInfo(new Asn1ObjectIdentifier((new OID("1.2.840.113549.1.7.1")).value), null);
+            cms.encapContentInfo = new EncapsulatedContentInfo(new Asn1ObjectIdentifier((new OID("1.2.840.113549.1.7.1")).value), (Asn1OctetString) null);
         } else {
             cms.encapContentInfo = new EncapsulatedContentInfo(new Asn1ObjectIdentifier((new OID("1.2.840.113549.1.7.1")).value), new Asn1OctetString(buffer));
         }

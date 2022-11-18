@@ -14,7 +14,7 @@ public class RedirectLoginController {
     @GetMapping("/oauth/esia")
     public String redirectEsiaAuth() {
 
-        String esiaAuthUrl = esiaAuthUrlService.generateAuthCodeUrl();
+        String esiaAuthUrl = esiaAuthUrlService.generateAuthCodeUrlV1();
 
         return "redirect:" + esiaAuthUrl;
     }
