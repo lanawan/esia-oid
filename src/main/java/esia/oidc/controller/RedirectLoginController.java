@@ -1,6 +1,6 @@
 package esia.oidc.controller;
 
-import esia.oidc.service.EsiaAuthUrlService;
+import esia.oidc.service.EsiaAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class RedirectLoginController {
 
-    private final EsiaAuthUrlService esiaAuthUrlService;
+    private final EsiaAuthService esiaAuthUrlService;
 
-    @GetMapping("/oauth/esia")
+    @GetMapping("/authcode")
     public String redirectEsiaAuth() {
 
-        String esiaAuthUrl = esiaAuthUrlService.generateAuthCodeUrlV1();
+        String esiaAuthUrl = esiaAuthUrlService.generateAuthCodeUrl();
 
         return "redirect:" + esiaAuthUrl;
     }

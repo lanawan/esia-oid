@@ -10,11 +10,8 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class EsiaProperties {
     private final String clientId;
     private final String authCodeUrl;
-    private final String returnUrl;
-
-    private final String keystoreAlias;
-    private final String keystorePassword;
-
-    private final String clientCertificateHash;
+    private final String redirectUri;
+    private final String tokenUrl;
+    private final String clientSecret;
 
 }
