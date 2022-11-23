@@ -7,3 +7,5 @@ esia:
   redirect-uri: http://localhost:${server.port}/esia_return
   token-url: https://test.lesegais.ru/oauth/token
 
+  connect-timeout: 1m
+  read-timeout: 1m

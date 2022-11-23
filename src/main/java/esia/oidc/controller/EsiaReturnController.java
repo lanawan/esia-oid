@@ -1,17 +1,20 @@
 package esia.oidc.controller;
 
+import esia.oidc.dto.AccessTokenDto;
 import esia.oidc.service.EsiaAuthException;
 import esia.oidc.service.EsiaAuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
+@RequiredArgsConstructor
 public class EsiaReturnController {
-    @Autowired
-    EsiaAuthService esiaAuthService;
+
+    private final EsiaAuthService esiaAuthService;
 
     @GetMapping(path = "/esia_return") //
     public String handleReturn(
@@ -24,6 +27,11 @@ public class EsiaReturnController {
             throw new EsiaAuthException("Authorization code not received. Error: '" + error
                     + "'. Description: '" + errorDescription + "'.");
         }
-        return esiaAuthService.getAccessToken(authorizationCode, state);
+        AccessTokenDto accessTokenDto = esiaAuthService.getAccessToken(authorizationCode, state);
+        if (accessTokenDto != null && accessTokenDto.getAccessToken() != null) {
+            return accessTokenDto.getAccessToken();
+        }
+        // TODO: change it according to UI
+        return null;
     }
 }

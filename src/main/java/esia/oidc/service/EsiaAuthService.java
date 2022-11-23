@@ -1,7 +1,11 @@
 package esia.oidc.service;
 
-public interface EsiaAuthService {
-    String generateAuthCodeUrl();
+import esia.oidc.dto.AccessTokenDto;
 
-    String getAccessToken(String code, String state);
+import java.util.Optional;
+
+public interface EsiaAuthService {
+    String getAuthCode();
+
+    AccessTokenDto getAccessToken(String code, String state);
 }
