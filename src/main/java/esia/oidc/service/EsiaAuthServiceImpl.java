@@ -2,6 +2,7 @@ package esia.oidc.service;
 
 import esia.oidc.EsiaProperties;
 import esia.oidc.dto.AccessTokenDto;
+import esia.oidc.dto.UserDto;
 import esia.oidc.utils.ParameterStringBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -10,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -26,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -98,6 +98,33 @@ class EsiaAuthServiceImpl implements EsiaAuthService {
             return accessTokenDto;
         } catch (HttpClientErrorException e) {
             throw new EsiaAuthException("Unable to get access token for authorization code '" + code + '\'' + e);
+        }
+    }
+
+    @Override
+    public UserDto getUserInfo(String token){
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.setBearerAuth(token);
+
+            HttpEntity<String> request = new HttpEntity<>(headers);
+
+            logger.debug("fetching esia user info");
+
+            ResponseEntity<UserDto> response = restTemplate.exchange(
+                    esiaProperties.getUserInfoUrl(),
+                    HttpMethod.GET,
+                    request,
+                    UserDto.class
+            );
+            UserDto userDto = response.getBody();
+            logger.debug("userDto: {}", userDto);
+
+            return userDto;
+        } catch (HttpClientErrorException e) {
+            throw new EsiaAuthException("Unable to get access token for token '" + token + '\'' + e);
         }
     }
 

@@ -1,6 +1,7 @@
 package esia.oidc.controller;
 
 import esia.oidc.dto.AccessTokenDto;
+import esia.oidc.dto.UserDto;
 import esia.oidc.service.EsiaAuthException;
 import esia.oidc.service.EsiaAuthService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class EsiaReturnController {
     private final EsiaAuthService esiaAuthService;
 
     @GetMapping(path = "/esia_return") //
-    public String handleReturn(
+    public UserDto handleReturn(
             @RequestParam(name = "code", required = false) String authorizationCode
             , @RequestParam(name = "state", required = false) String state
             , @RequestParam(name = "error", required = false) String error
@@ -29,7 +30,7 @@ public class EsiaReturnController {
         }
         AccessTokenDto accessTokenDto = esiaAuthService.getAccessToken(authorizationCode, state);
         if (accessTokenDto != null && accessTokenDto.getAccessToken() != null) {
-            return accessTokenDto.getAccessToken();
+            return esiaAuthService.getUserInfo(accessTokenDto.getAccessToken());
         }
         // TODO: change it according to UI
         return null;

@@ -17,4 +17,5 @@ public class EsiaProperties {
     private final String clientSecret;
     private final Duration connectTimeout;
     private final Duration readTimeout;
+    private final String userInfoUrl;
 }

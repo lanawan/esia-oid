@@ -2,6 +2,7 @@ server.port: 8080
 
 esia:
   auth-code-url: https://test.lesegais.ru/oauth/authorize
+  user-info-url: https://test.lesegais.ru/api/v1/oauth/me.json
   client-id: ${ESIA_CLIENT_ID}
   client-secret: ${ESIA_CLIENT_SECRET}
   redirect-uri: http://localhost:${server.port}/esia_return
